@@ -7,21 +7,7 @@ router.get('/', tasksControllers.getAllTasks);
 
 router.get('/:id', tasksControllers.getTaskByID);
 
-router.post('/', (req, res) => {
-    const {titulo} = req.body;
-
-    if (!titulo) {
-        return res.status(400).json ({ Error: "Titulo no existe"})
-    }
-
-   const nuevoId = tasks.length === 0 ? 1 : tasks[tasks.length - 1].id + 1;
-   
-   const nuevaTask = {id : nuevoId, titulo: titulo, completada: false}
-
-    tasks.push(nuevaTask)
-    
-    res.status(201).json(nuevaTask)
-})
+router.post('/', tasksControllers.createTask);
 
 router.patch('/:id', (req, res) => {
 const taskCompletada = tasks.find(task => task.id === parseInt(req.params.id));

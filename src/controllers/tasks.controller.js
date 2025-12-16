@@ -31,8 +31,21 @@ function createTask(req, res) {
     res.status(201).json(newTask)
 }
 
+function toggleTaskCompleted (req, res) {
+     const id = tasks.find(task => task.id === parseInt(req.params.id))
+
+     if (!id){
+        return res.status(400).json({Error: "No existe la tarea"})
+     }
+
+     id.completada = !id.completada;
+
+     res.status(200).json(id)
+}
+
 module.exports = {
     getAllTasks,
     getTaskByID,
     createTask,
+    toggleTaskCompleted,
 }

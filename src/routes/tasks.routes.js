@@ -9,18 +9,7 @@ router.get('/:id', tasksControllers.getTaskByID);
 
 router.post('/', tasksControllers.createTask);
 
-router.patch('/:id', (req, res) => {
-const taskCompletada = tasks.find(task => task.id === parseInt(req.params.id));
-
-if (!taskCompletada) {
-    return res.status(404).json ({Error: "No existe la tarea"})
-}
-
- taskCompletada.completada = !taskCompletada.completada;
-
-    res.status(200).json(taskCompletada)
-
-})
+router.patch('/:id', tasksControllers.toggleTaskCompleted)
  
 router.delete('/:id', (req, res) => {
  const index = tasks.findIndex(task => task.id === parseInt(req.params.id))

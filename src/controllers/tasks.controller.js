@@ -32,15 +32,15 @@ function createTask(req, res) {
 }
 
 function toggleTaskCompleted (req, res) {
-     const id = tasks.find(task => task.id === parseInt(req.params.id))
+     const taskCompleted = tasks.find(task => task.id === parseInt(req.params.id))
 
-     if (!id){
-        return res.status(400).json({Error: "No existe la tarea"})
+     if (!taskCompleted){
+        return res.status(404).json({Error: "No existe la tarea"})
      }
 
-     id.completada = !id.completada;
-
-     res.status(200).json(id)
+     taskCompleted.completada = !taskCompleted.completada;
+    
+     res.status(200).json(taskCompleted)
 }
 
 module.exports = {

@@ -43,9 +43,33 @@ function toggleTaskCompleted (req, res) {
      res.status(200).json(taskCompleted)
 }
 
+function deleteTask (req, res) {
+
+    const id = Number(req.params.id)
+
+    if (Number.isNaN(id)) {
+
+        return res.status(400).json({error: "Id invalido"})
+    }
+
+    const taskIndex = tasks.findIndex(t => t.id === id)
+
+    if (taskIndex === -1) {
+
+        return  res.status(404).json({error: "No existe la tarea."})
+    }
+    
+    const deletedTasks = tasks.splice(taskIndex, 1);
+    
+    const deletedTask = deletedTasks[0];
+
+    return  res.status(200).json({ message: "Tarea eliminada", task: deletedTask})
+}
+
 module.exports = {
     getAllTasks,
     getTaskByID,
     createTask,
     toggleTaskCompleted,
+    deleteTask,
 }

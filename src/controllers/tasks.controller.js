@@ -1,18 +1,21 @@
 const { tasks } = require ('../store/tasks.store')
+const AppError = require("../utils/AppError");
 
 function getAllTasks(req, res) {
     res.json(tasks)
 }
 
-function getTaskByID(req, res){
+function getTaskByID(req, res, next){
+
     const id = tasks.find(task => task.id === parseInt((req.params.id)))
 
     if(!id){
 
-      return res.status(404).json({error: "tarea no existe"})
+    return next (new AppError("No existe la tarea", 404))
     }
-    
+
     res.status(200).json(id)
+    
 }
 
 function createTask(req, res) {

@@ -1,8 +1,8 @@
-function notFound(req, res) {
+function NotFound(req, res) {
     res.status(404).json ({
     error: "not found",
-    Path: req.originalUrl,
+    path: req.originalUrl,
     });
 }
 
-module.exports = notFound;
+module.exports = NotFound;

@@ -5,17 +5,23 @@ function getAllTasks(req, res) {
     res.json(tasks)
 }
 
-function getTaskByID(req, res, next){
+function getTaskById(req, res, next){
 
-    const id = tasks.find(task => task.id === parseInt((req.params.id)))
+    const id = Number(req.params.id)
 
-    if(!id){
+    if(Number.isNaN(id)){
+        
+    return next (new AppError("Id invalido", 400))
+    }
+    
+    const task = tasks.find(t => t.id === id)
+
+    if(!task) {
 
     return next (new AppError("No existe la tarea", 404))
     }
 
-    res.status(200).json(id)
-    
+    res.status(200).json(task)
 }
 
 function createTask(req, res) {
@@ -71,7 +77,7 @@ function deleteTask (req, res) {
 
 module.exports = {
     getAllTasks,
-    getTaskByID,
+    getTaskById,
     createTask,
     toggleTaskCompleted,
     deleteTask,

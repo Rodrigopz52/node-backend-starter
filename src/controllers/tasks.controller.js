@@ -2,7 +2,7 @@ const { tasks } = require ('../store/tasks.store')
 const AppError = require("../utils/AppError");
 
 function getAllTasks(req, res) {
-    res.json(tasks)
+    res.status(200).json(tasks)
 }
 
 function getTaskById(req, res, next){

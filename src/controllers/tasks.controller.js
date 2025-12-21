@@ -24,20 +24,28 @@ function getTaskById(req, res, next){
     res.status(200).json(task)
 }
 
-function createTask(req, res) {
-    const {titulo} = req.body;
+function createTask(req, res, next) {
+   const {titulo} = req.body;
      
-    if(!titulo) {
-
-        return res.status(400).json({Error: "Titulo no existe"})
+   
+   if(!titulo || titulo.trim() === "") {
+       
+       return next (new AppError("El título es obligatorio", 400))
     }
+
+    const cleanTitle = titulo.trim()
+
     const newId = tasks.length === 0 ? 1 : tasks[tasks.length -1].id + 1;
     
-    const newTask = {id : newId, titulo : titulo, completada : false}
+    const newTask = {
+        id : newId, 
+        titulo : cleanTitle, 
+        completada : false
+    };
     
     tasks.push(newTask)
 
-    res.status(201).json(newTask)
+    return res.status(201).json(newTask)
 }
 
 function toggleTaskCompleted (req, res) {

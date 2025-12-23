@@ -27,7 +27,6 @@ function getTaskById(req, res, next){
 function createTask(req, res, next) {
    const {titulo} = req.body;
      
-   
    if(!titulo || titulo.trim() === "") {
        
        return next (new AppError("El título es obligatorio", 400))
@@ -48,16 +47,24 @@ function createTask(req, res, next) {
     return res.status(201).json(newTask)
 }
 
-function toggleTaskCompleted (req, res) {
-     const taskCompleted = tasks.find(task => task.id === parseInt(req.params.id))
+function toggleTaskCompleted (req, res, next) {
+     const id = Number(req.params.id)
 
-     if (!taskCompleted){
-        return res.status(404).json({Error: "No existe la tarea"})
+     if (Number.isNaN(id)) {
+      
+      return next (new AppError( "Id invalido", 400))
      }
 
-     taskCompleted.completada = !taskCompleted.completada;
+     const task = tasks.find(t => t.id === id)
+
+     if (!task) {
+       
+      return next (new AppError("No existe la tarea", 404))
+     }
+
+     task.completada = !task.completada;
     
-     res.status(200).json(taskCompleted)
+    return res.status(200).json(task)
 }
 
 function deleteTask (req, res) {

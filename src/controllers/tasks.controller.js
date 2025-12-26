@@ -1,8 +1,16 @@
-const { tasks } = require ('../store/tasks.store')
 const AppError = require("../utils/AppError");
+const prisma = require("../prisma/client");
 
-function getAllTasks(req, res) {
-    res.status(200).json(tasks)
+async function getAllTasks(req, res, next) {
+  try {
+    const tasks = await prisma.task.findMany({
+      orderBy: { id: "asc" },
+    });
+
+    return res.status(200).json(tasks);
+  } catch (err) {
+    return next(err);
+  }
 }
 
 function getTaskById(req, res, next){

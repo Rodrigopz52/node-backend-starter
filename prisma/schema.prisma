@@ -10,11 +10,10 @@ datasource db {
   url = env("DATABASE_URL")
 }
 
-model Task {
-  id Int @id @default(autoincrement())
-  titulo String
-  completada Boolean @default(false)
-
+  model Task {
+  id          Int      @id @default(autoincrement())
+  titulo      String
+  completada  Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

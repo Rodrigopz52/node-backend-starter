@@ -13,23 +13,30 @@ async function getAllTasks(req, res, next) {
   }
 }
 
-function getTaskById(req, res, next){
+async function getTaskById(req, res, next){
+  
+     const id = Number(req.params.id)
 
-    const id = Number(req.params.id)
+     if(Number.isNaN(id)){
+      
+     return next(new AppError("Id invalido", 400))
+     }
 
-    if(Number.isNaN(id)){
-        
-    return next (new AppError("Id invalido", 400))
-    }
-    
-    const task = tasks.find(t => t.id === id)
+     try {
+      const task = await prisma.task.findUnique({
+        where: {id}
+      });
+  
+      if(!task) {
+  
+     return next(new AppError("No existe la tarea", 404))
+      }
 
-    if(!task) {
+     return res.status(200).json(task)
 
-    return next (new AppError("No existe la tarea", 404))
-    }
-
-    res.status(200).json(task)
+     } catch (err) {
+       return next(err);
+     }
 }
 
 function createTask(req, res, next) {

@@ -62,7 +62,7 @@ async function createTask(req, res, next) {
     }
 }
 
-function toggleTaskCompleted (req, res, next) {
+async function toggleTaskCompleted (req, res, next) {
      const id = Number(req.params.id)
 
      if (Number.isNaN(id)) {
@@ -70,17 +70,30 @@ function toggleTaskCompleted (req, res, next) {
       return next (new AppError( "Id invalido", 400))
      }
 
-     const task = tasks.find(t => t.id === id)
+     try {
+      const task = await prisma.task.findUnique({
+        where: { id },
+      });
+      
+      if (!task) {
+        
+       return next (new AppError("No existe la tarea", 404))
+      }
 
-     if (!task) {
-       
-      return next (new AppError("No existe la tarea", 404))
-     }
+      const newValue = !task.completada; 
+      
+      const updatedTask = await prisma.task.update ({
+        where: {id}, 
+        data: {completada : newValue},
+      })
 
-     task.completada = !task.completada;
-    
-    return res.status(200).json(task)
-}
+      return res.status(200).json(updatedTask)
+
+    } catch (err){
+      return next(err)
+    }
+  }
+
 
 function deleteTask (req, res) {
 

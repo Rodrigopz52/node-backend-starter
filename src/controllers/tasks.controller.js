@@ -39,27 +39,27 @@ async function getTaskById(req, res, next){
      }
 }
 
-function createTask(req, res, next) {
+async function createTask(req, res, next) {
+
    const {titulo} = req.body;
      
    if(!titulo || titulo.trim() === "") {
        
-       return next (new AppError("El título es obligatorio", 400))
+       return next(new AppError("El título es obligatorio", 400))
     }
-
+    
     const cleanTitle = titulo.trim()
 
-    const newId = tasks.length === 0 ? 1 : tasks[tasks.length -1].id + 1;
-    
-    const newTask = {
-        id : newId, 
-        titulo : cleanTitle, 
-        completada : false
-    };
-    
-    tasks.push(newTask)
+  try {
+   const task = await prisma.task.create ({ 
+    data: {titulo: cleanTitle}, 
+  });
 
-    return res.status(201).json(newTask)
+    return res.status(201).json(task)
+
+    } catch (err) {
+      return next(err)
+    }
 }
 
 function toggleTaskCompleted (req, res, next) {

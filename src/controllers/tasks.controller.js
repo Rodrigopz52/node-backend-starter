@@ -77,7 +77,7 @@ async function toggleTaskCompleted (req, res, next) {
       
       if (!task) {
         
-       return next (new AppError("No existe la tarea", 404))
+       return next(new AppError("No existe la tarea", 404))
       }
 
       const newValue = !task.completada; 
@@ -95,27 +95,33 @@ async function toggleTaskCompleted (req, res, next) {
   }
 
 
-function deleteTask (req, res) {
+async function deleteTask (req, res, next) {
 
     const id = Number(req.params.id)
 
     if (Number.isNaN(id)) {
 
-        return res.status(400).json({error: "Id invalido"})
+        return next(new AppError("Id invalido", 400))
     }
 
-    const taskIndex = tasks.findIndex(t => t.id === id)
+    try {
+      const task = await prisma.task.findUnique({ 
+        where: { id },
+      });
 
-    if (taskIndex === -1) {
+      if (!task) {
+          return next(new AppError("No existe la tarea", 404))
+      }
+      
+      await prisma.task.delete({ 
+        where: { id },
+      });
 
-        return  res.status(404).json({error: "No existe la tarea."})
+      return  res.status(200).json({ message: "Tarea eliminada", task})
+
+    }catch (err) {
+      return next(err);
     }
-    
-    const deletedTasks = tasks.splice(taskIndex, 1);
-    
-    const deletedTask = deletedTasks[0];
-
-    return  res.status(200).json({ message: "Tarea eliminada", task: deletedTask})
 }
 
 module.exports = {
